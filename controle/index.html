@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Controle Euphoria</title>
+<meta name="theme-color" content="#151215">
+<link rel="icon" href="../img/favicon.png">
+<style>
+@font-face{font-family:'Italiana';src:url(../fontes/italiana-latin-400-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Outfit';src:url(../fontes/outfit-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Outfit';src:url(../fontes/outfit-latin-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
+:root{--pink:#E20867;--blush:#FBEAF1;--ink:#151215;--muted:#6F676E;--line:#F2D3E1;--fd:'Italiana',Georgia,serif;--fb:'Outfit',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--blush);color:var(--ink);font:400 16px/1.45 var(--fb)}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.top{background:var(--ink);color:#fff;position:sticky;top:0;z-index:5}
+.top .w{display:flex;align-items:center;gap:14px;height:62px}
+.top img{height:26px}.top b{font:400 22px var(--fd);margin-right:auto}
+.top button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:7px 14px;font-size:14px}
+.w{max-width:1180px;margin:0 auto;padding:0 16px}
+main{padding:22px 0 60px}
+h1{font:400 36px/1.1 var(--fd);margin:0 0 6px}
+.muted{color:var(--muted)}.small{font-size:13.5px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(226,8,103,.06)}
+.btn{border:1.5px solid #E7B9CD;background:#fff;border-radius:99px;padding:9px 16px;font-weight:600;font-size:14px}
+.btn.pri{background:var(--pink);border-color:var(--pink);color:#fff}.btn.esc{background:var(--ink);border-color:var(--ink);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.busca{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.busca input,.busca select{border:1.5px solid #E7B9CD;background:#fff;border-radius:14px;padding:11px 14px;font-size:16px}
+.busca input{flex:1 1 260px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #f6e3ec;font-size:14px;vertical-align:middle}
+th{background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;letter-spacing:.04em}
+tr.it{cursor:pointer}tr.it:hover{background:#FFF5F9}
+td img{width:46px;height:61px;object-fit:cover;border-radius:8px}
+.cod{font-weight:600;color:var(--pink);white-space:nowrap}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;background:#F6E3EC;margin:1px}
+.tag.off{background:#eee;color:#888}
+.pin{max-width:380px;margin:60px auto;text-align:center}
+.pin input{width:100%;text-align:center;font-size:28px;letter-spacing:.4em;border:1.5px solid #E7B9CD;border-radius:14px;padding:12px;margin:14px 0}
+.det{display:grid;grid-template-columns:minmax(160px,240px) 1fr;gap:20px}
+@media(max-width:640px){.det{grid-template-columns:1fr}.hide-m{display:none}}
+.det img{width:100%;border-radius:14px;aspect-ratio:3/4;object-fit:cover}
+dl{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;margin:0}dt{color:var(--muted);font-size:13.5px}dd{margin:0;font-weight:500}
+textarea{width:100%;min-height:80px;border:1.5px solid #E7B9CD;border-radius:12px;padding:10px}
+.forn{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.vazio{text-align:center;padding:50px 20px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;z-index:9}
+.tabs{display:flex;gap:8px;margin:6px 0 4px;flex-wrap:wrap}
+.pedgrid{display:grid;gap:14px}.pedgrid table{border:0}.pedgrid td{font-size:13.5px}
+.badge{background:var(--pink);color:#fff;border-radius:99px;padding:0 7px;font-size:12px}
+.barra{height:8px;background:#F6E3EC;border-radius:99px;overflow:hidden;margin:6px 0}.barra i{display:block;height:100%;background:var(--pink)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}.grid2 label{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--muted)}.grid2 input,.grid2 select,td select{border:1.5px solid #E7B9CD;border-radius:12px;padding:9px 11px;background:#fff;color:var(--ink);font-size:15px}.grid2 .chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:99px;font-weight:600}
+.tabs button[aria-pressed=true]{background:var(--ink);color:#fff}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+const DB='controle-euphoria', ST='dados';
+const app=document.getElementById('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const brl=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let S={pin:null,ok:false,forn:[],itens:[],pedidos:[],form:null,tela:'lista',q:'',f:'',sel:null,ultimo:Date.now()};
+function idb(){return new Promise((r,j)=>{const o=indexedDB.open(DB,1);o.onupgradeneeded=()=>o.result.createObjectStore(ST);o.onsuccess=()=>r(o.result);o.onerror=()=>j(o.error);});}
+async function ler(k){const d=await idb();return new Promise(r=>{const g=d.transaction(ST).objectStore(ST).get(k);g.onsuccess=()=>r(g.result);g.onerror=()=>r(null);});}
+async function gravar(k,v){const d=await idb();return new Promise((r,j)=>{const t=d.transaction(ST,'readwrite');t.objectStore(ST).put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error);});}
+async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('euphoria-controle:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+async function salvar(){await gravar('forn',S.forn);await gravar('itens',S.itens);await gravar('pedidos',S.pedidos);}
+function topo(){return `<div class="top"><div class="w"><img src="../img/logo.png" alt="Euphoria"><b>Controle</b>${S.ok?'<button data-a="bloquear">Bloquear</button>':''}</div></div>`;}
+function abas(v){const t=[['lista','Vestidos'],['pedidos','Pedidos da semana'],['forn','Fornecedores'],['dados','Importar e backup']];return `<div class="tabs">${t.map(([k,n])=>`<button data-a="tela" data-v="${k}" aria-pressed="${v===k}">${n}${k==='pedidos'&&abertos().length?` <span class="badge">${abertos().length}</span>`:''}</button>`).join('')}</div>`;}
+const ST_P={aberto:'Aguardando fechamento',pedido:'Pedido ao fornecedor',chegou:'Chegou na loja',entregue:'Entregue',cancelado:'Cancelado'};
+const abertos=()=>S.pedidos.filter(x=>x.status==='aberto');
+const minimo=l=>+((S.forn.find(f=>f.letra===l)||{}).minimo_pecas||3);
+function telaPedidos(){
+  const grupos=S.forn.map(f=>({f,l:S.pedidos.filter(x=>x.fornecedor===f.letra&&x.status==='aberto')}));
+  const ativos=S.pedidos.filter(x=>x.status==='pedido'||x.status==='chegou').sort((a,b)=>(a.evento||'9').localeCompare(b.evento||'9'));
+  const linhaP=x=>`<tr><td class="cod">${esc(x.codigo)}</td><td>${esc(x.cor)} · ${esc(x.tam)}</td><td>${x.loja?'<span class="tag">Estoque da loja</span>':esc(x.cliente)+(x.whats?`<br><span class="muted small">${esc(x.whats)}</span>`:'')}</td><td class="hide-m">${x.evento?new Date(x.evento+'T12:00').toLocaleDateString('pt-BR'):'—'}</td><td class="hide-m">${x.loja?'—':x.sinal?'<span class="tag">Sinal ok</span>':'<span class="tag off">Sem sinal</span>'}</td><td><select data-p="${x.id}" class="mudaSt">${Object.entries(ST_P).map(([k,n])=>`<option value="${k}" ${x.status===k?'selected':''}>${n}</option>`).join('')}</select></td></tr>`;
+  return topo()+`<main class="w">${abas('pedidos')}
+  <div class="row" style="margin:14px 0"><button class="btn pri" data-a="novoPedido">+ Novo pedido de cliente</button><button class="btn" data-a="novoPedido" data-v="loja">+ Peça para a loja</button></div>
+  ${S.form?formPedido():''}
+  <div class="pedgrid">${grupos.map(({f,l})=>{const m=minimo(f.letra);const ok=l.length>=m;return `<div class="card"><span class="cod">Letra ${esc(f.letra)}</span><h1 style="font-size:26px">${esc(f.nome)}</h1>
+   <div class="barra"><i style="width:${Math.min(100,l.length/m*100)}%"></i></div><p class="small"><b>${l.length} de ${m} peças</b> ${ok?'· pronto para fechar':'· faltam '+(m-l.length)}</p>
+   ${l.length?`<table><tbody>${l.map(linhaP).join('')}</tbody></table>`:'<p class="muted small">Nenhum pedido aguardando.</p>'}
+   ${l.length?`<div class="row" style="margin-top:10px"><button class="btn ${ok?'pri':''}" data-a="fecharPedido" data-v="${f.letra}">Fechar e copiar pedido</button></div>`:''}</div>`}).join('')||'<p class="muted">Importe os fornecedores primeiro.</p>'}</div>
+  <h2 style="font:400 26px var(--fd);margin:26px 0 8px">Em andamento</h2>
+  ${ativos.length?`<table><thead><tr><th>Código</th><th>Cor · tam.</th><th>Cliente</th><th class="hide-m">Evento</th><th class="hide-m">Sinal</th><th>Situação</th></tr></thead><tbody>${ativos.map(linhaP).join('')}</tbody></table>`:'<p class="muted small">Nada em andamento.</p>'}
+  </main>`;
+}
+function formPedido(){
+  const F=S.form;const i=S.itens.find(x=>x.codigo===F.codigo);
+  return `<div class="card" style="margin-bottom:16px"><h1 style="font-size:26px">${F.loja?'Peça para o estoque da loja':'Novo pedido de cliente'}</h1>
+  <div class="grid2"><label>Código do vestido<input id="fp-cod" value="${esc(F.codigo||'')}" placeholder="ex.: FES-C003" list="lista-cod"></label><datalist id="lista-cod">${S.itens.map(x=>`<option value="${x.codigo}">${esc(x.ref_fornecedor)}</option>`).join('')}</datalist>
+  <label>Cor<select id="fp-cor">${i?(i.cores||[]).map(c=>`<option ${F.cor===c?'selected':''}>${esc(c)}</option>`).join(''):'<option value="">digite o código</option>'}</select></label>
+  <label>Tamanho<select id="fp-tam">${i?(i.tamanhos||[]).map(c=>`<option ${F.tam===c?'selected':''}>${esc(c)}</option>`).join(''):'<option value="">—</option>'}</select></label>
+  ${F.loja?'':`<label>Nome da cliente<input id="fp-cli" value="${esc(F.cliente||'')}"></label><label>WhatsApp<input id="fp-wa" inputmode="tel" value="${esc(F.whats||'')}"></label><label>Data do evento<input id="fp-ev" type="date" value="${esc(F.evento||'')}"></label>
+  <label class="chk"><input id="fp-sinal" type="checkbox" ${F.sinal?'checked':''}> Sinal de 30% recebido${i?` (${brl(i.preco*0.3)})`:''}</label>`}
+  <label style="grid-column:1/-1">Observação<input id="fp-obs" value="${esc(F.obs||'')}"></label></div>
+  <div class="row" style="margin-top:12px"><button class="btn pri" data-a="salvarPedido">Salvar</button><button class="btn" data-a="cancelarForm">Cancelar</button></div></div>`;
+}
+function telaPin(){
+  const novo=!S.pin;
+  return topo()+`<main class="w"><div class="pin card"><h1>${novo?'Crie o PIN':'Área da equipe'}</h1>
+  <p class="muted small">${novo?'Este controle guarda os dados dos fornecedores só neste aparelho. Crie um PIN de 4 a 8 números.':'Digite o PIN para abrir o controle.'}</p>
+  <input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8" autofocus>
+  ${novo?'<input id="pin2" type="password" inputmode="numeric" placeholder="repita" maxlength="8">':''}
+  <button class="btn pri" data-a="${novo?'criarPin':'entrar'}" style="width:100%">${novo?'Criar PIN':'Entrar'}</button></div></main>`;
+}
+function linhas(l){
+  return l.map(i=>`<tr class="it" data-a="abrir" data-v="${i.codigo}"><td class="hide-m">${i.thumb?`<img src="${i.thumb}" alt="">`:''}</td><td class="cod">${esc(i.codigo)}</td>
+   <td>${esc(fornNome(i.fornecedor))}<br><span class="muted small">${esc(i.ref_fornecedor)}</span></td>
+   <td>${brl(i.custo)}</td><td><b>${brl(i.preco)}</b></td><td class="hide-m small">${esc((i.tamanhos||[]).join(' · '))}</td>
+   <td class="hide-m">${i.na_vitrine===false?'<span class="tag off">Fora da vitrine</span>':'<span class="tag">Na vitrine</span>'}</td></tr>`).join('');
+}
+const fornNome=l=>(S.forn.find(f=>f.letra===l)||{}).nome||l;
+function telaLista(){
+  const q=S.q.trim().toLowerCase().replace(/\s+/g,'');
+  const l=S.itens.filter(i=>(!S.f||i.fornecedor===S.f)&&(!q||(i.codigo.toLowerCase().replace(/[-\s]/g,'').includes(q.replace('-',''))||String(i.ref_fornecedor).toLowerCase().replace(/\s/g,'').includes(q)||(i.cores||[]).join(' ').toLowerCase().includes(S.q.trim().toLowerCase()))));
+  return topo()+`<main class="w">${abas('lista')}
+  ${S.itens.length?`<div class="busca"><input id="q" placeholder="Buscar código (ex.: A012), referência ou cor" value="${esc(S.q)}" autocomplete="off">
+   <select id="ff"><option value="">Todos os fornecedores</option>${S.forn.map(f=>`<option value="${f.letra}" ${S.f===f.letra?'selected':''}>${f.letra} · ${esc(f.nome)}</option>`).join('')}</select></div>
+   <p class="muted small">${l.length} de ${S.itens.length} vestidos</p>
+   <table><thead><tr><th class="hide-m"></th><th>Código</th><th>Fornecedor · ref.</th><th>Custo</th><th>Preço</th><th class="hide-m">Tamanhos</th><th class="hide-m">Vitrine</th></tr></thead><tbody>${linhas(l)}</tbody></table>`
+  :`<div class="card vazio"><h1>Nenhum vestido ainda</h1><p class="muted">Importe o arquivo de controle que o Claude gerou (termina em <b>.euphoria</b>).</p><button class="btn pri" data-a="importar">Importar arquivo</button></div>`}
+  </main>`;
+}
+function telaItem(){
+  const i=S.itens.find(x=>x.codigo===S.sel); if(!i)return telaLista(); const f=S.forn.find(x=>x.letra===i.fornecedor)||{};
+  return topo()+`<main class="w"><button class="btn" data-a="tela" data-v="lista">‹ Voltar</button>
+  <div class="card" style="margin-top:14px"><div class="det"><div>${i.thumb?`<img src="${i.thumb}" alt="">`:''}</div><div>
+   <span class="cod" style="font-size:14px;letter-spacing:.12em">${esc(i.codigo)}</span><h1>${esc(i.titulo_fornecedor||'')}</h1>
+   <dl><dt>Fornecedor</dt><dd>${esc(f.nome||i.fornecedor)}</dd><dt>Referência</dt><dd>${esc(i.ref_fornecedor)}</dd>
+   <dt>Custo (base)</dt><dd>${brl(i.custo)}${i.preco_site_hoje&&i.preco_site_hoje!=i.custo?` <span class="muted small">(no site hoje: ${brl(i.preco_site_hoje)})</span>`:''}</dd>
+   <dt>Preço Euphoria</dt><dd>${brl(i.preco)} · até ${i.parcelas}x de ${brl(i.preco/i.parcelas)}</dd>
+   <dt>Margem</dt><dd>${brl(i.preco-i.custo)} <span class="muted small">(${Math.round((i.preco/i.custo-1)*100)}% sobre o custo)</span></dd>
+   <dt>Tecido</dt><dd>${esc(i.tecido||'—')}</dd><dt>Tamanhos</dt><dd>${esc((i.tamanhos||[]).join(' · '))}</dd>
+   <dt>Cores</dt><dd>${(i.cores||[]).map(c=>`<span class="tag">${esc(c)}</span>`).join('')}</dd>
+   ${i.estoque?`<dt>Estoque no fornecedor</dt><dd class="small">${Object.entries(i.estoque).map(([k,q])=>`<span class="tag">${esc(k.replace('|',' '))}: ${q}</span>`).join('')}<br><span class="muted">lido em 17/11</span></dd>`:''}
+   <dt>Nome na vitrine</dt><dd>${esc(i.nome_publico||'—')}</dd>
+   <dt>Ocasiões</dt><dd>${(i.ocasioes||[]).map(c=>`<span class="tag">${esc(c)}</span>`).join('')}</dd>
+   <dt>Contato</dt><dd>${esc(f.whatsapp||'—')}${f.email?' · '+esc(f.email):''}</dd></dl>
+   <div class="row" style="margin-top:16px">${i.url_fornecedor?`<a class="btn esc" href="${esc(i.url_fornecedor)}" target="_blank" rel="noopener">Abrir no site do fornecedor</a>`:''}
+    <button class="btn pri" data-a="pedirEste">Novo pedido deste vestido</button><button class="btn" data-a="copiarPedido">Copiar pedido avulso</button>
+    <button class="btn" data-a="vitrine">${i.na_vitrine===false?'Marcar: volta para a vitrine':'Marcar: sair da vitrine'}</button></div>
+   <h3 style="margin:18px 0 6px;font-size:15px">Observações</h3><textarea id="obs" placeholder="Ex.: fornecedor avisou que a cor Vinho acabou">${esc(i.obs||'')}</textarea>
+   <button class="btn" data-a="salvarObs" style="margin-top:8px">Salvar observação</button>
+   ${i.descricao_fornecedor?`<details style="margin-top:14px"><summary class="small muted">Descrição do fornecedor</summary><p class="small">${esc(i.descricao_fornecedor)}</p></details>`:''}
+  </div></div></div></main>`;
+}
+function telaForn(){
+  return topo()+`<main class="w">${abas('forn')}
+  <div class="forn">${S.forn.map(f=>`<div class="card"><span class="cod">Letra ${esc(f.letra)} · ${S.itens.filter(i=>i.fornecedor===f.letra).length} vestidos</span><h1 style="font-size:28px">${esc(f.nome)}</h1>
+   <dl>${[['Site',f.site],['WhatsApp',f.whatsapp],['E-mail',f.email],['Instagram',f.instagram],['Endereço',f.endereco],['Pedido mínimo',f.pedido_minimo],['Condições',f.condicoes],['Prazo',f.prazo],['Preço',f.base_preco],['Obs.',f.obs]].filter(x=>x[1]).map(([k,v])=>`<dt>${k}</dt><dd>${/^https?:/.test(v)?`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v)}</a>`:esc(v)}</dd>`).join('')}</dl>
+   <div class="grid2" style="margin-top:12px"><label>Mínimo de peças (atacado)<input data-fl="${f.letra}" data-campo="minimo_pecas" inputmode="numeric" value="${esc(f.minimo_pecas||3)}"></label><label>Peça avulsa (varejo)<input data-fl="${f.letra}" data-campo="avulso" placeholder="ex.: +R$ 40 por peça" value="${esc(f.avulso||'')}"></label></div>
+   <button class="btn" data-a="salvarForn" data-v="${f.letra}" style="margin-top:8px">Salvar</button></div>`).join('')||'<p class="muted">Nenhum fornecedor importado.</p>'}</div></main>`;
+}
+function telaDados(){
+  return topo()+`<main class="w">${abas('dados')}
+  <div class="forn"><div class="card"><h1 style="font-size:28px">Importar bloco</h1><p class="small muted">Arquivo <b>.euphoria</b> que o Claude gera para cada fornecedor. Se o vestido já existir, ele é atualizado e as suas observações são mantidas.</p><button class="btn pri" data-a="importar">Escolher arquivo</button></div>
+  <div class="card"><h1 style="font-size:28px">Backup</h1><p class="small muted">Os dados ficam só neste aparelho. Faça um backup depois de cada importação e guarde o arquivo num lugar seguro.</p><button class="btn esc" data-a="backup">Baixar backup</button></div></div></main>`;
+}
+function render(){ app.innerHTML=!S.ok?telaPin():S.tela==='item'?telaItem():S.tela==='forn'?telaForn():S.tela==='dados'?telaDados():S.tela==='pedidos'?telaPedidos():telaLista(); const q=document.getElementById('q'); if(q&&S.foco){q.focus();q.setSelectionRange(q.value.length,q.value.length);} }
+const A={
+  async criarPin(){const a=document.getElementById('pin').value,b=document.getElementById('pin2').value;if(!/^\d{4,8}$/.test(a)){toast('Use de 4 a 8 números.');return;}if(a!==b){toast('Os PINs não conferem.');return;}S.pin=await hash(a);await gravar('pin',S.pin);S.ok=true;render();},
+  async entrar(){const a=document.getElementById('pin').value;if(await hash(a)===S.pin){S.ok=true;S.ultimo=Date.now();render();}else toast('PIN incorreto.');},
+  bloquear(){S.ok=false;render();},
+  tela(v){S.tela=v;S.foco=false;render();window.scrollTo(0,0);},
+  abrir(v){S.sel=v;S.tela='item';render();window.scrollTo(0,0);},
+  importar(){const inp=document.createElement('input');inp.type='file';inp.accept='.euphoria,.json,application/json';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;try{const p=JSON.parse(await f.text());
+    if(p.tipo==='controle-euphoria-backup'){S.forn=p.forn||[];S.itens=p.itens||[];S.pedidos=p.pedidos||[];}
+    else{if(p.tipo!=='controle-euphoria')throw new Error('tipo');let n=0,u=0;(p.fornecedores||[]).forEach(fo=>{const k=S.forn.findIndex(x=>x.letra===fo.letra);if(k>=0){const keep={minimo_pecas:S.forn[k].minimo_pecas,avulso:S.forn[k].avulso};S.forn[k]=Object.assign({},S.forn[k],fo);Object.keys(keep).forEach(z=>{if(keep[z])S.forn[k][z]=keep[z];});}else S.forn.push(fo);});
+     (p.itens||[]).forEach(it=>{const k=S.itens.findIndex(x=>x.codigo===it.codigo);if(k>=0){const obs=S.itens[k].obs;S.itens[k]=Object.assign({},it,{obs:obs||it.obs||''});u++;}else{S.itens.push(it);n++;}});
+     S.itens.sort((a,b)=>a.codigo.localeCompare(b.codigo));toast(`${n} vestidos novos, ${u} atualizados.`);}
+    await salvar();S.tela='lista';render();}catch(e){toast('Este arquivo não é um controle da Euphoria.');}};inp.click();},
+  backup(){const blob=new Blob([JSON.stringify({tipo:'controle-euphoria-backup',data:new Date().toISOString(),forn:S.forn,itens:S.itens,pedidos:S.pedidos})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-controle-euphoria-'+new Date().toISOString().slice(0,10)+'.euphoria';document.body.appendChild(a);a.click();a.remove();},
+  async copiarPedido(){const i=S.itens.find(x=>x.codigo===S.sel);const t=`Olá! Tudo bem? Gostaria de fazer um pedido:\n\n${String(i.titulo_fornecedor).includes(i.ref_fornecedor)?i.titulo_fornecedor:i.titulo_fornecedor+" ("+i.ref_fornecedor+")"}\nCor: \nTamanho: \nQuantidade: 1\n\nPode me confirmar a disponibilidade e o prazo?`;try{await navigator.clipboard.writeText(t);toast('Pedido copiado. Complete a cor e o tamanho.');}catch(e){prompt('Copie o pedido:',t);}},
+  async vitrine(){const i=S.itens.find(x=>x.codigo===S.sel);i.na_vitrine=i.na_vitrine===false;await salvar();toast(i.na_vitrine?'Marcado para voltar à vitrine.':'Marcado como fora da vitrine. Peça ao Claude para tirar da próxima atualização.');render();},
+  novoPedido(v){S.form={loja:v==='loja'};render();},
+  pedirEste(){S.form={codigo:S.sel};S.tela='pedidos';render();window.scrollTo(0,0);},
+  cancelarForm(){S.form=null;render();},
+  async salvarPedido(){const g=id=>document.getElementById(id);const cod=(g('fp-cod').value||'').trim().toUpperCase();const i=S.itens.find(x=>x.codigo===cod);
+    if(!i){toast('Código não encontrado.');return;}
+    const x={id:Date.now().toString(36),codigo:i.codigo,fornecedor:i.fornecedor,ref:i.ref_fornecedor,titulo:i.titulo_fornecedor,cor:g('fp-cor').value,tam:g('fp-tam').value,loja:!!S.form.loja,status:'aberto',criado:new Date().toISOString().slice(0,10),obs:g('fp-obs').value};
+    if(!x.loja){x.cliente=g('fp-cli').value.trim();x.whats=g('fp-wa').value.trim();x.evento=g('fp-ev').value;x.sinal=g('fp-sinal').checked;if(!x.cliente){toast('Informe o nome da cliente.');return;}}
+    S.pedidos.push(x);S.form=null;await salvar();toast('Pedido salvo.');render();},
+  async fecharPedido(l){const f=S.forn.find(x=>x.letra===l);const ps=S.pedidos.filter(x=>x.fornecedor===l&&x.status==='aberto');if(!ps.length)return;
+    if(ps.length<minimo(l)&&!confirm(`Só ${ps.length} de ${minimo(l)} peças. Fechar mesmo assim?`))return;
+    const t=`Olá! Tudo bem? Aqui é da Euphoria Moda Feminina. Gostaria de fazer este pedido:\n\n${ps.map((x,k)=>`${k+1}. ${x.titulo}${String(x.titulo).includes(x.ref)?'':' ('+x.ref+')'} · Cor: ${x.cor} · Tamanho: ${x.tam}`).join('\n')}\n\nTotal: ${ps.length} peças. Pode confirmar a disponibilidade e o prazo?`;
+    try{await navigator.clipboard.writeText(t);toast('Pedido copiado. Cole no WhatsApp do fornecedor.');}catch(e){prompt('Copie o pedido:',t);}
+    const hoje=new Date().toISOString().slice(0,10);ps.forEach(x=>{x.status='pedido';x.pedido_em=hoje;});await salvar();render();},
+  async salvarForn(l){const f=S.forn.find(x=>x.letra===l);document.querySelectorAll(`[data-fl="${l}"]`).forEach(el=>{f[el.dataset.campo]=el.value.trim();});await salvar();toast('Fornecedor salvo.');render();},
+  async salvarObs(){const i=S.itens.find(x=>x.codigo===S.sel);i.obs=document.getElementById('obs').value;await salvar();toast('Observação salva.');}
+};
+app.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;S.ultimo=Date.now();const f=A[el.dataset.a];if(f)f(el.dataset.v);});
+app.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;S.foco=true;render();}});
+app.addEventListener('change',async e=>{if(e.target.classList.contains('mudaSt')){const x=S.pedidos.find(y=>y.id===e.target.dataset.p);x.status=e.target.value;await salvar();render();return;}if(e.target.id==='fp-cod'){const g=id=>document.getElementById(id);const F=S.form;F.codigo=e.target.value.trim().toUpperCase();if(g('fp-cli')){F.cliente=g('fp-cli').value;F.whats=g('fp-wa').value;F.evento=g('fp-ev').value;F.sinal=g('fp-sinal').checked;}F.obs=g('fp-obs').value;render();return;}if(e.target.id==='ff'){S.f=e.target.value;render();}});
+app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pin')(S.pin?A.entrar:A.criarPin)();});
+setInterval(()=>{if(S.ok&&Date.now()-S.ultimo>5*60*1000){S.ok=false;render();}},20000);
+document.addEventListener('pointerdown',()=>{S.ultimo=Date.now();},{passive:true});
+(async()=>{try{S.pin=await ler('pin');S.forn=(await ler('forn'))||[];S.itens=(await ler('itens'))||[];S.pedidos=(await ler('pedidos'))||[];}catch(e){}render();})();
+})();
+</script>
+</body>
+</html>
