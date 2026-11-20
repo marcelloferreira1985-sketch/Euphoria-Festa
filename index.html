@@ -172,7 +172,7 @@ footer ul{margin:4px 0;padding-left:18px;max-width:75ch}footer li{margin:4px 0}
 (function(){
 'use strict';
 const WA='5513996333343';
-const OCAS=['Casamento','Madrinha','Formatura','Debutante','Gala','Branco','Plus size'];
+const OCAS=['Convidada','Madrinha','Formatura','Debutante','Gala','Branco','Plus size'];
 const HEX={'Amarelo':'#F2C94C','Azul':'#3B6FD8','Azul marinho':'#1E2A55','Azul royal':'#2541B2','Azul serenity':'#9DB7E5','Branco':'#FFFFFF','Cereja':'#9B1B30','Cinza':'#9A9A9A','Dourado':'#C9A44B','Fúcsia':'#D6187A','Laranja':'#F07A2A','Lavanda':'#B9A3E3','Lilás':'#C59BDF','Marrom':'#6B3F2A','Nude':'#E3BFA6','Pink':'#F0389A','Preto':'#151215','Preto com bege':'linear-gradient(90deg,#151215 50%,#D9C2A3 50%)','Rosa bebê':'#F6C6D6','Rose gold':'#D9A08D','Rosê':'#E7A9A4','Roxo':'#6A2D91','Salmão':'#F49A82','Terra claro':'#C78A62','Terracota':'#B65A3A','Verde bandeira':'#1E8E3E','Verde esmeralda':'#0F7A5A','Verde folha':'#4C8C2B','Verde lima':'#B7D84B','Verde limão':'#C4E04A','Verde menta':'#A8DCC4','Verde oliva':'#6B6E3A','Verde oliva claro':'#9AA066','Verde oliva escuro':'#4B4D26','Verde petróleo':'#1F5257','Vermelho':'#C8102E','Vinho':'#6E1A2E','Amarelo manteiga':'#F6E3A1','Azul bic':'#1F3FD1','Bege':'#E6D3B8','Laranja claro':'#F6A66B','Lavanda escura':'#8F7BC4','Marsala':'#8C2F3A','Rose canela':'#C98E80','Verde militar':'#4E5B31','Verde água':'#8FD3C1'};
 const bg=c=>HEX[c]||'#ddd';
 const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -203,7 +203,7 @@ function render(){
   document.querySelectorAll('#f-ocas .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.o===F.o));
   $('limpar').hidden=!(F.o||F.cor||F.t||F.ord);
   $('branco-bar').hidden=F.o!=='Branco';
-  $('cont').textContent=l.length+(l.length===1?' vestido':' vestidos')+(F.o==='Branco'?' em branco':F.o?' para '+F.o.toLowerCase():'');
+  $('cont').textContent=l.length+(l.length===1?' vestido':' vestidos')+(F.o==='Branco'?' em branco':F.o==='Convidada'?' para convidada de casamento':F.o?' para '+F.o.toLowerCase():'');
   $('grade').innerHTML=l.length?l.map(card).join(''):'<p class="vazio">Nenhum vestido com esses filtros. Fale com a nossa consultoria: a gente encontra o seu.</p>';
 }
 $('f-ocas').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;F.o=b.dataset.o;render();});
@@ -220,7 +220,7 @@ function abrir(c){
    <button class="seta e" data-s="-1" aria-label="Foto anterior">‹</button><button class="seta d" data-s="1" aria-label="Próxima foto">›</button>
    <div class="pontos" id="pontos">${fotos.map((_,k)=>`<i class="${k?'':'on'}"></i>`).join('')}</div></div>
   ${BR&&i.fb?'<p class="ilus">Imagem ilustrativa do modelo na cor branca.</p>':''}<div class="dados"><span class="cod">${i.c}</span><h2 id="det-tit">${esc(i.n)}</h2>
-   <div class="ocas"><small class="combina">Combina com:</small>${i.o.filter(o=>o!=='Branco').map(o=>`<span>${o}</span>`).join('')}${i.o.includes('Branco')?'<span>Noiva civil e réveillon</span>':''}</div>
+   <div class="ocas"><small class="combina">Combina com:</small>${i.o.filter(o=>o!=='Branco').map(o=>`<span>${o==='Convidada'?'Convidada de casamento':o}</span>`).join('')}${i.o.includes('Branco')?'<span>Noiva civil e réveillon</span>':''}</div>
    <div class="preco">${brl(i.p)}</div><div class="parc">ou até ${i.x}x de ${brl(i.p/i.x)} sem juros</div>
    <div class="disp">Cores e tamanhos sujeitos à disponibilidade. A confirmação é feita pela nossa consultoria antes do pedido.</div>
    <h4>Escolha a cor do seu vestido</h4><p class="obs" style="margin:-8px 0 0">As fotos mostram o modelo. O seu vestido é feito na cor escolhida.</p><div class="opcoes" id="op-cor">${i.cores.map(c=>`<button class="chip" data-cor="${esc(c)}" aria-pressed="${esc_cor===c}"><span class="bola" style="background:${bg(c)}"></span>${esc(c)}</button>`).join('')}</div>
