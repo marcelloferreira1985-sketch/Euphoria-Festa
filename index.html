@@ -64,6 +64,11 @@ header.top a.wa{display:inline-flex;align-items:center;gap:8px;text-decoration:n
 .linha{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.linha::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1.5px solid #EBC2D5;background:#fff;border-radius:99px;padding:8px 14px;font-size:14px;font-weight:500;white-space:nowrap}
 .chip[aria-pressed=true]{background:var(--pink);border-color:var(--pink);color:#fff}
+#f-ocas .chip[data-o=Branco]{background:#fff;border-color:#CFCBD0;box-shadow:inset 0 0 0 1px #fff,0 1px 6px rgba(0,0,0,.08)}
+#f-ocas .chip[data-o=Branco][aria-pressed=true]{background:#fff;color:#151215;border-color:var(--pink);box-shadow:0 0 0 2px var(--pink)}
+.branco-bar{background:#fff;border:1px solid #EBC2D5;border-radius:12px;padding:10px 14px;font-size:13.5px;line-height:1.5;color:#151215}
+.branco-bar span{display:block;font:600 11px var(--fb);letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin-bottom:2px}
+.ilus{font-size:12px;color:#6F676E;margin:6px 0 0;text-align:center}
 .chip .bola{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
 .sel{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .sel select{font:500 14px var(--fb);border:1.5px solid #EBC2D5;background:#fff;border-radius:99px;padding:8px 14px;color:var(--ink)}
@@ -136,6 +141,7 @@ footer ul{margin:4px 0;padding-left:18px;max-width:75ch}footer li{margin:4px 0}
 <nav class="filtros" aria-label="Filtros"><div class="wrap">
   <span class="insp">Inspirações por ocasião</span>
   <div class="linha" id="f-ocas"></div>
+  <div class="branco-bar" id="branco-bar" hidden><span>Ideal para</span> Casamento civil · Mini wedding · Pré-wedding e ensaio fotográfico · Troca de roupa da noiva, o famoso segundo look · Renovação de votos e bodas · Réveillon · Colação de grau</div>
   <div class="sel">
     <select id="f-cor" aria-label="Cor"><option value="">Todas as cores</option></select>
     <select id="f-tam" aria-label="Tamanho"><option value="">Todos os tamanhos</option></select>
@@ -166,7 +172,7 @@ footer ul{margin:4px 0;padding-left:18px;max-width:75ch}footer li{margin:4px 0}
 (function(){
 'use strict';
 const WA='5513996333343';
-const OCAS=['Casamento','Madrinha','Formatura','Debutante','Gala','Plus size'];
+const OCAS=['Casamento','Madrinha','Formatura','Debutante','Gala','Branco','Plus size'];
 const HEX={'Amarelo':'#F2C94C','Azul':'#3B6FD8','Azul marinho':'#1E2A55','Azul royal':'#2541B2','Azul serenity':'#9DB7E5','Branco':'#FFFFFF','Cereja':'#9B1B30','Cinza':'#9A9A9A','Dourado':'#C9A44B','Fúcsia':'#D6187A','Laranja':'#F07A2A','Lavanda':'#B9A3E3','Lilás':'#C59BDF','Marrom':'#6B3F2A','Nude':'#E3BFA6','Pink':'#F0389A','Preto':'#151215','Preto com bege':'linear-gradient(90deg,#151215 50%,#D9C2A3 50%)','Rosa bebê':'#F6C6D6','Rose gold':'#D9A08D','Rosê':'#E7A9A4','Roxo':'#6A2D91','Salmão':'#F49A82','Terra claro':'#C78A62','Terracota':'#B65A3A','Verde bandeira':'#1E8E3E','Verde esmeralda':'#0F7A5A','Verde folha':'#4C8C2B','Verde lima':'#B7D84B','Verde limão':'#C4E04A','Verde menta':'#A8DCC4','Verde oliva':'#6B6E3A','Verde oliva claro':'#9AA066','Verde oliva escuro':'#4B4D26','Verde petróleo':'#1F5257','Vermelho':'#C8102E','Vinho':'#6E1A2E','Amarelo manteiga':'#F6E3A1','Azul bic':'#1F3FD1','Bege':'#E6D3B8','Laranja claro':'#F6A66B','Lavanda escura':'#8F7BC4','Marsala':'#8C2F3A','Rose canela':'#C98E80','Verde militar':'#4E5B31','Verde água':'#8FD3C1'};
 const bg=c=>HEX[c]||'#ddd';
 const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -188,7 +194,7 @@ function lista(){
   return l;
 }
 function card(i){
-  return `<button class="card" data-c="${i.c}"><div class="foto"><img src="fotos/${i.f[0]}" alt="${esc(i.n)} ${i.c}" loading="lazy"></div>
+  return `<button class="card" data-c="${i.c}"><div class="foto"><img src="fotos/${F.o==='Branco'&&i.fb?i.fb:i.f[0]}" alt="${esc(i.n)} ${i.c}" loading="lazy"></div>
   <div class="info"><span class="cod">${i.c}</span><span class="nome">${esc(i.n)}</span><span class="preco">${brl(i.p)}</span><span class="parc">ou até ${i.x}x de ${brl(i.p/i.x)} sem juros</span>
   <span class="bolas">${i.cores.slice(0,10).map(c=>`<i style="background:${bg(c)}" title="${esc(c)}"></i>`).join('')}${i.cores.length>10?`<small style="font-size:11px;color:#6F676E">+${i.cores.length-10}</small>`:''}</span></div></button>`;
 }
@@ -196,7 +202,8 @@ function render(){
   const l=lista();
   document.querySelectorAll('#f-ocas .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.o===F.o));
   $('limpar').hidden=!(F.o||F.cor||F.t||F.ord);
-  $('cont').textContent=l.length+(l.length===1?' vestido':' vestidos')+(F.o?' para '+F.o.toLowerCase():'');
+  $('branco-bar').hidden=F.o!=='Branco';
+  $('cont').textContent=l.length+(l.length===1?' vestido':' vestidos')+(F.o==='Branco'?' em branco':F.o?' para '+F.o.toLowerCase():'');
   $('grade').innerHTML=l.length?l.map(card).join(''):'<p class="vazio">Nenhum vestido com esses filtros. Fale com a nossa consultoria: a gente encontra o seu.</p>';
 }
 $('f-ocas').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;F.o=b.dataset.o;render();});
@@ -207,18 +214,18 @@ $('limpar').addEventListener('click',()=>{F.o=F.cor=F.t=F.ord='';$('f-cor').valu
 // detalhe
 let atual=null,esc_cor='',esc_tam='';
 function abrir(c){
-  const i=IT.find(x=>x.c===c); if(!i)return; atual=i; esc_cor=F.cor&&i.cores.includes(F.cor)?F.cor:''; esc_tam=F.t&&i.t.includes(F.t)?F.t:'';
+  const i=IT.find(x=>x.c===c); if(!i)return; atual=i; const BR=F.o==='Branco'; const fotos=BR&&i.fb?[i.fb,...i.f]:i.f; esc_cor=BR&&i.cores.includes('Branco')?'Branco':F.cor&&i.cores.includes(F.cor)?F.cor:''; esc_tam=F.t&&i.t.includes(F.t)?F.t:'';
   $('caixa').innerHTML=`<button class="fechar" id="fechar" aria-label="Fechar">×</button>
-  <div class="gal"><div class="trilho" id="trilho">${i.f.map((f,k)=>`<img src="fotos/${f}" alt="${esc(i.n)} ${i.c}, foto ${k+1}" ${k?'loading="lazy"':''}>`).join('')}</div>
+  <div class="gal"><div class="trilho" id="trilho">${fotos.map((f,k)=>`<img src="fotos/${f}" alt="${esc(i.n)} ${i.c}, foto ${k+1}" ${k?'loading="lazy"':''}>`).join('')}</div>
    <button class="seta e" data-s="-1" aria-label="Foto anterior">‹</button><button class="seta d" data-s="1" aria-label="Próxima foto">›</button>
-   <div class="pontos" id="pontos">${i.f.map((_,k)=>`<i class="${k?'':'on'}"></i>`).join('')}</div></div>
-  <div class="dados"><span class="cod">${i.c}</span><h2 id="det-tit">${esc(i.n)}</h2>
-   <div class="ocas"><small class="combina">Combina com:</small>${i.o.map(o=>`<span>${o}</span>`).join('')}</div>
+   <div class="pontos" id="pontos">${fotos.map((_,k)=>`<i class="${k?'':'on'}"></i>`).join('')}</div></div>
+  ${BR&&i.fb?'<p class="ilus">Imagem ilustrativa do modelo na cor branca.</p>':''}<div class="dados"><span class="cod">${i.c}</span><h2 id="det-tit">${esc(i.n)}</h2>
+   <div class="ocas"><small class="combina">Combina com:</small>${i.o.filter(o=>o!=='Branco').map(o=>`<span>${o}</span>`).join('')}${i.o.includes('Branco')?'<span>Noiva civil e réveillon</span>':''}</div>
    <div class="preco">${brl(i.p)}</div><div class="parc">ou até ${i.x}x de ${brl(i.p/i.x)} sem juros</div>
    <div class="disp">Cores e tamanhos sujeitos à disponibilidade. A confirmação é feita pela nossa consultoria antes do pedido.</div>
    <h4>Escolha a cor do seu vestido</h4><p class="obs" style="margin:-8px 0 0">As fotos mostram o modelo. O seu vestido é feito na cor escolhida.</p><div class="opcoes" id="op-cor">${i.cores.map(c=>`<button class="chip" data-cor="${esc(c)}" aria-pressed="${esc_cor===c}"><span class="bola" style="background:${bg(c)}"></span>${esc(c)}</button>`).join('')}</div>
    <h4>Tamanho</h4><div class="opcoes" id="op-tam">${i.t.map(t=>`<button class="chip" data-tam="${t}" aria-pressed="${esc_tam===t}">${t}</button>`).join('')}</div>
-   <div class="campo"><label for="ev-tipo"><h4>Para qual ocasião? <small style="font-weight:400;text-transform:none;letter-spacing:0;color:#6F676E">(opcional)</small></h4></label><select id="ev-tipo"><option value="">Escolha, se quiser</option>${['Convidada de casamento','Madrinha','Mãe dos noivos','Formatura','Debutante','Aniversário ou festa','Evento de gala','Outra'].map(o=>`<option>${o}</option>`).join('')}</select></div>
+   <div class="campo"><label for="ev-tipo"><h4>Para qual ocasião? <small style="font-weight:400;text-transform:none;letter-spacing:0;color:#6F676E">(opcional)</small></h4></label><select id="ev-tipo"><option value="">Escolha, se quiser</option>${['Convidada de casamento','Madrinha','Mãe dos noivos','Noiva (civil ou mini wedding)','Pré-wedding ou ensaio','Réveillon','Formatura','Colação de grau','Debutante','Aniversário ou festa','Evento de gala','Outra'].map(o=>`<option>${o}</option>`).join('')}</select></div>
    <div class="campo"><label for="ev-data"><h4>Data do evento</h4></label><input id="ev-data" type="date"></div>
    <p class="obs" id="prazo-aviso" hidden>Para eventos com menos de 20 dias, fale com a nossa consultoria antes: o prazo médio é de 10 a 15 dias úteis após a confirmação do pedido.</p>
    <p class="aviso" id="aviso"></p>
