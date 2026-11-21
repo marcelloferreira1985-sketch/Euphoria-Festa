@@ -45,6 +45,20 @@ header.top .topo-logo img{height:24px;width:auto;display:block;opacity:.92}
 footer h4.siga{display:flex;align-items:flex-end;gap:7px;margin-top:22px;line-height:1}footer h4.siga img{height:12.5px;width:auto;margin-bottom:-1px}
 @media(max-width:520px){header.top a.wa span{display:none}header.top a.wa{padding:9px 11px}}
 header.top a.wa{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:500;font-size:14px;border:1px solid rgba(255,255,255,.35);padding:8px 14px;border-radius:99px}
+.bnr{position:relative;overflow:hidden;background:#111;aspect-ratio:16/10;max-height:560px;width:100%}
+.bnr-t{display:flex;height:100%;transition:transform .7s cubic-bezier(.6,.05,.2,1)}
+.bnr-s{position:relative;flex:0 0 100%;height:100%;cursor:pointer;color:#fff;text-align:left}
+.bnr-s img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 8%}
+.bnr-x{position:absolute;left:6%;top:50%;transform:translateY(-50%);max-width:44%}
+.bnr-x small{display:block;font:600 clamp(10px,1.3vw,15px) var(--fb);letter-spacing:.32em;text-transform:uppercase;color:#FF8CC0}
+.bnr-x b{display:block;font:400 clamp(26px,5.2vw,64px)/1.02 'Italiana',serif;letter-spacing:.06em;margin:.25em 0 .35em;text-transform:uppercase}
+.bnr-x span{display:block;font-size:clamp(12px,1.5vw,18px);line-height:1.45;opacity:.9}
+.bnr-x i{display:inline-block;font-style:normal;margin-top:1.1em;border:1px solid #fff;border-radius:999px;padding:.6em 1.4em;font-size:clamp(11px,1.2vw,15px);letter-spacing:.2em;text-transform:uppercase;background:rgba(255,255,255,.08)}
+.bnr-s:hover .bnr-x i{background:#fff;color:#151215}
+.bnr-d{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:8px;z-index:3}
+.bnr-d button{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.5);cursor:pointer;transition:width .3s}
+.bnr-d button[aria-current=true]{width:24px;background:#FF5FA8}
+@media(max-width:700px){.bnr{aspect-ratio:4/3}.bnr-x{max-width:56%;left:5%}.bnr-x span{display:none}.bnr-s img{object-position:72% 50%}}
 .hero{position:relative;overflow:hidden;text-align:center;padding:54px 0 46px;background:radial-gradient(90% 140% at 50% 0%,#FFFFFF 0%,#FCEFF5 45%,#F6DCE8 100%)}
 .hero .wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .cetim{position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.75) 45%,rgba(255,214,232,.5) 50%,transparent 65%);background-size:300% 100%;animation:cetim 9s ease-in-out infinite;mix-blend-mode:soft-light}
@@ -138,6 +152,11 @@ footer ul{margin:4px 0;padding-left:18px;max-width:75ch}footer li{margin:4px 0}
   <h1><span class="hlogo hlogo-brilho" role="img" aria-label="Euphoria"></span><span class="festa">Festa</span></h1>
   <span class="pedido">Faça seu pedido</span>
 </div></section>
+<section class="bnr" id="bnr" aria-label="Destaques da coleção"><div class="bnr-t" id="bnr-t">
+<div class="bnr-s" data-o="" role="link" tabindex="0"><img src="img/banners/b1.jpg" alt="Três modelos com vestidos de festa preto, pink e verde"><div class="bnr-x"><small>Lançamento</small><b>Coleção<br>Festa</b><span>Do casamento ao réveillon, um vestido para cada celebração.</span><i>Ver vestidos</i></div></div>
+<div class="bnr-s" data-o="Branco" role="link" tabindex="0"><img src="img/banners/b2.jpg" alt="Três modelos com vestidos brancos"><div class="bnr-x"><small>Novidade</small><b>Toda de<br>branco</b><span>Casamento civil, pré-wedding, segundo look e réveillon.</span><i>Ver modelos</i></div></div>
+<div class="bnr-s" data-o="Formatura" role="link" tabindex="0"><img src="img/banners/b3.jpg" alt="Três modelos com vestidos de formatura"><div class="bnr-x"><small>Gala &amp; Formatura</small><b>Feito para<br>brilhar</b><span>Brilho, fenda e caimento impecável para a sua noite.</span><i>Ver formatura</i></div></div>
+</div><div class="bnr-d" id="bnr-d"></div></section>
 <nav class="filtros" aria-label="Filtros"><div class="wrap">
   <span class="insp">Inspirações por ocasião</span>
   <div class="linha" id="f-ocas"></div>
@@ -206,6 +225,15 @@ function render(){
   $('cont').textContent=l.length+(l.length===1?' vestido':' vestidos')+(F.o==='Branco'?' em branco':F.o==='Convidada'?' para convidada de casamento':F.o?' para '+F.o.toLowerCase():'');
   $('grade').innerHTML=l.length?l.map(card).join(''):'<p class="vazio">Nenhum vestido com esses filtros. Fale com a nossa consultoria: a gente encontra o seu.</p>';
 }
+
+(function(){const t=$('bnr-t'),d=$('bnr-d'),n=t.children.length;let k=0,tm;
+d.innerHTML=[...Array(n)].map((_,i)=>`<button aria-label="Banner ${i+1}"></button>`).join('');
+function go(i){k=(i+n)%n;t.style.transform=`translateX(-${k*100}%)`;[...d.children].forEach((b,j)=>b.setAttribute('aria-current',j===k));clearInterval(tm);tm=setInterval(()=>go(k+1),5500);}
+d.addEventListener('click',e=>{const b=e.target.closest('button');if(b)go([...d.children].indexOf(b));});
+let x0=null;t.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});t.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(k+(dx<0?1:-1));x0=null;});
+function abre(s){F.o=s.dataset.o;render();document.querySelector('.filtros').scrollIntoView({behavior:'smooth'});}
+[...t.children].forEach(s=>{s.addEventListener('click',()=>abre(s));s.addEventListener('keydown',e=>{if(e.key==='Enter')abre(s)});});
+go(0);})();
 $('f-ocas').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;F.o=b.dataset.o;render();});
 $('f-cor').addEventListener('change',e=>{F.cor=e.target.value;render();});
 $('f-tam').addEventListener('change',e=>{F.t=e.target.value;render();});
