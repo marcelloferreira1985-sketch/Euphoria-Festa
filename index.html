@@ -242,7 +242,7 @@ $('limpar').addEventListener('click',()=>{F.o=F.cor=F.t=F.ord='';$('f-cor').valu
 // detalhe
 let atual=null,esc_cor='',esc_tam='';
 function abrir(c){
-  const i=IT.find(x=>x.c===c); if(!i)return; atual=i; const BR=F.o==='Branco'; const fotos=BR&&i.fb?[i.fb,...i.f]:i.f; esc_cor=BR&&i.cores.includes('Branco')?'Branco':F.cor&&i.cores.includes(F.cor)?F.cor:''; esc_tam=F.t&&i.t.includes(F.t)?F.t:'';
+  const i=IT.find(x=>x.c===c); if(!i)return; atual=i; const BR=F.o==='Branco'; const fotos=BR&&i.fb?[i.fb,...i.f.filter(x=>x!==i.fb)]:i.f; esc_cor=BR&&i.cores.includes('Branco')?'Branco':F.cor&&i.cores.includes(F.cor)?F.cor:''; esc_tam=F.t&&i.t.includes(F.t)?F.t:'';
   $('caixa').innerHTML=`<button class="fechar" id="fechar" aria-label="Fechar">×</button>
   <div class="gal"><div class="trilho" id="trilho">${fotos.map((f,k)=>`<img src="fotos/${f}" alt="${esc(i.n)} ${i.c}, foto ${k+1}" ${k?'loading="lazy"':''}>`).join('')}</div>
    <button class="seta e" data-s="-1" aria-label="Foto anterior">‹</button><button class="seta d" data-s="1" aria-label="Próxima foto">›</button>
