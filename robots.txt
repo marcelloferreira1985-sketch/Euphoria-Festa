@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /controle/
+
+Sitemap: https://www.euphoriamoda.com.br/sitemap.xml
